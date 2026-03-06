@@ -1,7 +1,4 @@
-"""
-AI Stats Lab
-Random Variables and Distributions
-"""
+""" AI Stats Lab Random Variables and Distributions """
 
 import numpy as np
 import math
@@ -15,29 +12,24 @@ from scipy.integrate import quad
 # =========================================================
 
 def cdf_probabilities():
-    """
-    STEP 1
-    Compute analytically
 
-        P(X > 5)
-        P(X < 5)
-        P(3 < X < 7)
+    # Analytic values for Exp(1)
+    analytic_gt5 = math.exp(-5)
+    analytic_lt5 = 1 - math.exp(-5)
+    analytic_interval = math.exp(-3) - math.exp(-7)
 
-    STEP 2
-    Simulate 100000 samples from Exp(1)
+    # Simulation
+    samples = np.random.exponential(scale=1, size=100000)
 
-    STEP 3
-    Estimate P(X > 5) using simulation
+    simulated_gt5 = np.mean(samples > 5)
 
-    RETURN
+    print("Q1 Results")
+    print("P(X > 5) analytic:", analytic_gt5)
+    print("P(X < 5) analytic:", analytic_lt5)
+    print("P(3 < X < 7) analytic:", analytic_interval)
+    print("P(X > 5) simulated:", simulated_gt5)
 
-        analytic_gt5
-        analytic_lt5
-        analytic_interval
-        simulated_gt5
-    """
-
-    raise NotImplementedError
+    return analytic_gt5, analytic_lt5, analytic_interval, simulated_gt5
 
 
 # =========================================================
@@ -45,32 +37,31 @@ def cdf_probabilities():
 # =========================================================
 
 def pdf_validation_plot():
-    """
-    Candidate PDF
 
-        f(x) = 2x e^{-x^2} for x >= 0
+    def f(x):
+        return 2*x*np.exp(-x**2)
 
-    STEP 1
-    Verify non-negativity
+    # Integral from 0 to infinity
+    integral_value, _ = quad(f, 0, np.inf)
 
-    STEP 2
-    Compute
+    is_valid_pdf = abs(integral_value - 1) < 1e-6
 
-        integral_0^∞ f(x) dx
+    # Plot
+    x = np.linspace(0, 3, 400)
+    y = f(x)
 
-    STEP 3
-    Determine if valid PDF
+    plt.figure()
+    plt.plot(x, y)
+    plt.title("PDF f(x) = 2x e^(-x^2)")
+    plt.xlabel("x")
+    plt.ylabel("f(x)")
+    plt.show()
 
-    STEP 4
-    Plot f(x) on [0,3]
+    print("\nQ2 Results")
+    print("Integral value:", integral_value)
+    print("Is valid PDF:", is_valid_pdf)
 
-    RETURN
-
-        integral_value
-        is_valid_pdf
-    """
-
-    raise NotImplementedError
+    return integral_value, is_valid_pdf
 
 
 # =========================================================
@@ -78,30 +69,22 @@ def pdf_validation_plot():
 # =========================================================
 
 def exponential_probabilities():
-    """
-    X ~ Exp(1)
 
-    STEP 1
-    Compute analytically
+    analytic_gt5 = math.exp(-5)
+    analytic_interval = math.exp(-1) - math.exp(-3)
 
-        P(X > 5)
-        P(1 < X < 3)
+    samples = np.random.exponential(scale=1, size=100000)
 
-    STEP 2
-    Simulate 100000 samples
+    simulated_gt5 = np.mean(samples > 5)
+    simulated_interval = np.mean((samples > 1) & (samples < 3))
 
-    STEP 3
-    Estimate probabilities using simulation
+    print("\nQ3 Results")
+    print("P(X > 5) analytic:", analytic_gt5)
+    print("P(1 < X < 3) analytic:", analytic_interval)
+    print("P(X > 5) simulated:", simulated_gt5)
+    print("P(1 < X < 3) simulated:", simulated_interval)
 
-    RETURN
-
-        analytic_gt5
-        analytic_interval
-        simulated_gt5
-        simulated_interval
-    """
-
-    raise NotImplementedError
+    return analytic_gt5, analytic_interval, simulated_gt5, simulated_interval
 
 
 # =========================================================
@@ -109,32 +92,33 @@ def exponential_probabilities():
 # =========================================================
 
 def gaussian_probabilities():
-    """
-    X ~ N(10,2^2)
 
-    STEP 1
-    Standardize variable
+    # analytic
+    analytic_le12 = norm.cdf(12, loc=10, scale=2)
+    analytic_interval = norm.cdf(12, loc=10, scale=2) - norm.cdf(8, loc=10, scale=2)
 
-        Z = (X - 10)/2
+    # simulation
+    samples = np.random.normal(loc=10, scale=2, size=100000)
 
-    STEP 2
-    Compute analytically
+    simulated_le12 = np.mean(samples <= 12)
+    simulated_interval = np.mean((samples > 8) & (samples < 12))
 
-        P(X ≤ 12)
-        P(8 < X < 12)
+    print("\nQ4 Results")
+    print("P(X ≤ 12) analytic:", analytic_le12)
+    print("P(8 < X < 12) analytic:", analytic_interval)
+    print("P(X ≤ 12) simulated:", simulated_le12)
+    print("P(8 < X < 12) simulated:", simulated_interval)
 
-    STEP 3
-    Simulate 100000 samples
+    return analytic_le12, analytic_interval, simulated_le12, simulated_interval
 
-    STEP 4
-    Estimate probabilities
 
-    RETURN
+# =========================================================
+# MAIN
+# =========================================================
 
-        analytic_le12
-        analytic_interval
-        simulated_le12
-        simulated_interval
-    """
+if __name__ == "__main__":
 
-    raise NotImplementedError
+    cdf_probabilities()
+    pdf_validation_plot()
+    exponential_probabilities()
+    gaussian_probabilities()
